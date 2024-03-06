@@ -69,8 +69,27 @@ def coin_flip():
         return pl.score +10
     else:
         print("wrong")
-        end_choice = lose_draw
+        end_choice = lose_draw()
         if end_choice == 1:
             coin_flip()
         return "gg"
-coin_flip()           
+
+def guessing_game():
+    ran_num = random.randint(1,10)
+    choice = int(input("please enter your guess the number is between 1,10"))
+    while choice >10 | choice < 1:
+            choice = int(input("please enter your guess the number is between 1,10"))
+    if choice == ran_num:
+        print("your guess is correct")
+        return pl.score +20
+    
+    else:
+        end_choice = lose_draw()
+        if end_choice == 1:
+            guessing_game()
+    
+        else:   
+            print("gg") 
+            return pl.score 
+
+guessing_game()    
