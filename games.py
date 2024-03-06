@@ -52,7 +52,25 @@ def lose_draw():
         choise=int(input("try agian = 1 \nquit = 0\n"))
     return choise
     
-rps_game()
 
 
+
+def coin_flip():
+    coin = {1: "head", 2: "tail"}
+    choice = int(input("1 : head \n 2: tail \n"))
+    coin_state = random.randint(1,2)
     
+    while choice > 2 or choice < 1:
+        print("You can only choose on of these two states")
+        choice = int(input("1 : head \n 2: tail \n"))
+
+    if choice == coin_state :
+        print("You won ")
+        return pl.score +10
+    else:
+        print("wrong")
+        end_choice = lose_draw
+        if end_choice == 1:
+            coin_flip()
+        return "gg"
+coin_flip()           
