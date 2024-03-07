@@ -9,87 +9,103 @@ def player_info():
 
 pl = player(player_info, 0)
 
-def rps_logic(palyer_choice, cpu):
-     rps = {1: "rock", 2:"paper", 3:"scissors"}
-     if rps[palyer_choice] == rps[cpu]:
-        return "draw"
-     elif (palyer_choice == 1 and cpu == 3 ) or (palyer_choice==2 and cpu == 1) or (palyer_choice == 3 and cpu ==2):
-        return "win"
-     else:
-        return "lose"
-
-
-def rps_game():
-    rps = {1: "rock", 2:"paper", 3:"scissors"}
-    cpu = random.randint(1,3)
-    player_choice = int(input("choose a number between 1-3  \n 1: rock , 2: paper, 3: scissors"))
-    while player_choice < 1 or player_choice > 3:
-            player_choice = int(input("choose a number between 1-3  \n 1: rock , 2: paper, 3: scissors"))
-    time.sleep(1)
-    print("Player: "+ rps[player_choice])
-    time.sleep(2)
-    print("CPU: "+ rps[cpu]+"\n")
-    if rps_logic(player_choice,cpu) == "win":
-        print("You won")
-        return pl.score+10
-    elif rps_logic(player_choice,cpu) == "lose":
-        print("you lost")
-        choise = lose_draw()
-        if choise ==1:
-            rps_game()
-        else:
-            print ("game over")
-            return "game over"
+def difficulty():
+    dif = int(input("Easy: 1\nnormal: 2\nhard: 3\n "))
+    
+    while dif > 3 or dif < 1:
+            dif = int(input("Easy: 1\nnormal: 2\nhard: 3\n "))
+    if dif == 1 :
+         return 5
+    elif dif ==2:
+         return 3
     else:
-        print("its a draw")
-        rps_game()
-
-
-
-def lose_draw():
-    choise=int(input("try agian = 1 \nquit = 0\n"))
-    while(choise<0 or choise >1):
-        choise=int(input("try agian = 1 \nquit = 0\n"))
-    return choise
+         return 1        
     
 
+def choice_checker(mini, maxi, choice, massage):
+     while choice < mini or choice > maxi:
+        choice =int(input(massage)) 
 
 
-def coin_flip():
+def rps_game(diff):
+    rps = {1: "rock", 2:"paper", 3:"scissors"}
+    cpu = random.randint(1,3)
+    player_choice = int(input("choose a number between 1-3  \n 1: rock  2: paper 3: scissors\n chances left " + str(diff)))
+    score = 15/diff
+    
+    choice_checker(1,3,player_choice,"choose a number between 1-3  \n 1: rock  2: paper 3: scissors\n")
+    
+    while diff != 0:
+        diff = diff-1
+        if (player_choice == 1 and cpu == 3 ) or (player_choice==2 and cpu == 1) or (player_choice == 3 and cpu ==2):
+            time.sleep(1)
+            print(rps[player_choice]+" X " + rps[cpu]+"\n**********you won**********")
+            pl.score += score
+            return pl.score
+        else:
+            if diff ==0:
+                 break
+            time.sleep(1)
+            print(rps[player_choice]+" X " + rps[cpu])
+            player_choice = int(input("Trye again\nchoose a number between 1-3  \n 1: rock  2: paper 3: scissors\n chances left "+ str(diff)))
+            choice_checker(1,3,player_choice,"choose a number between 1-3  \n 1: rock  2: paper 3: scissors\n")
+            cpu = random.randint(1,3)
+
+    print("You lost")       
+    return pl.score
+
+
+
+
+def coin_flip(diff):
     coin = {1: "head", 2: "tail"}
     choice = int(input("1 : head \n 2: tail \n"))
     coin_state = random.randint(1,2)
     
-    while choice > 2 or choice < 1:
-        print("You can only choose on of these two states")
-        choice = int(input("1 : head \n 2: tail \n"))
+    choice_checker(1,2,choice,"You can only choose on of these two states\n1 : head \n 2: tail \n")
+    score = 30/diff
+    while diff != 0:
+        diff-=1
+        if choice == coin_state:
+            pl.score += score
+            time.sleep(1)
+            print(coin[coin_state]+ " X "+ coin[choice] + "\n**********you won**********")
+            return pl.score
+        else:
+            time.sleep(1)
+            choice = int(input(str(coin[coin_state])+ " X "+ str(coin[choice]) +"\nTry again \n1 : head \n 2: tail \n"))
+            choice_checker(1,2,choice,"You can only choose on of these two states\n1 : head \n 2: tail \n")
+            coin_state = random.randint(1,2)
 
-    if choice == coin_state :
-        print("You won ")
-        return pl.score +10
-    else:
-        print("wrong")
-        end_choice = lose_draw()
-        if end_choice == 1:
-            coin_flip()
-        return "gg"
+    return pl.score        
+         
 
-def guessing_game():
+def guessing_game(diff):
     ran_num = random.randint(1,10)
-    choice = int(input("please enter your guess the number is between 1,10"))
-    while choice >10 | choice < 1:
-            choice = int(input("please enter your guess the number is between 1,10"))
-    if choice == ran_num:
-        print("your guess is correct")
-        return pl.score +20
-    
-    else:
-        end_choice = lose_draw()
-        if end_choice == 1:
-            guessing_game()
-    
-        else:   
-            print("gg") 
-            return pl.score 
+    choice = int(input("enter your guess the number is between 1,10 \nchances left"+str(diff)))
+    choice_checker(1,10,choice,"please enter your guess the number is between 1,10")
 
-guessing_game()    
+    score = 60/diff
+    while diff != 0:
+        diff -=1 
+        if ran_num == choice:
+            pl.score += score
+            time.sleep(1)
+            print("**********you won**********")
+            return pl.score
+        
+        elif ran_num != choice:
+            time.sleep(1)
+            if diff ==0:
+                break
+            
+            if choice > ran_num:
+                choice = int(input("Guess lower " +str(diff)))
+                choice_checker(1,10,choice,"please enter your guess the number is between 1,10")
+            else:
+                choice = int(input("Guess higher "+ str(diff)))
+                choice_checker(1,10,choice,"please enter your guess the number is between 1,10")  
+    return pl.score            
+while True:
+    diff = difficulty()
+    guessing_game(diff)
